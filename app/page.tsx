@@ -13,7 +13,7 @@ export default function Home() {
   const [restaurants, setRestaurants] = useState<any[]>([]);
   const [error, setError] = useState("");
 
-// Get Location Function
+  // Get Location Function
   const getLocation = () => {
     if (!navigator.geolocation) {
       setError("Geolocation is not supported");
@@ -42,7 +42,7 @@ export default function Home() {
 
         console.log(latitude, longitude);
 
-        const query =`
+        const query = `
           [out:json];
           node
           ["amenity"="restaurant"]
@@ -54,13 +54,13 @@ export default function Home() {
           method: "POST",
           body: query,
         })
-        .then((res) => res.json())
-        .then((data) => {
-          console.log(data.elements);
-          setRestaurants(data.elements);
-        })
+          .then((res) => res.json())
+          .then((data) => {
+            console.log(data.elements);
+            setRestaurants(data.elements);
+          })
       },
-      (error)=>{
+      (error) => {
         console.log(error);
       }
     );
@@ -76,20 +76,20 @@ export default function Home() {
 
           <div className="flex flex-col gap-3 justify-start items-start md:flex-row">
             <button
-            onClick={getLocation}
-            className="bg-black text-white px-6 py-3 rounded-lg hover:cursor-pointer"
-          >
-            Get My Location
-          </button>
+              onClick={getLocation}
+              className="bg-black text-white px-6 py-3 rounded-lg hover:cursor-pointer"
+            >
+              Get My Location
+            </button>
 
-          <button
-          onClick={getRestaurant}
-            className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:cursor-pointer"
-          >
-            Find Restaurants
-          </button>
+            <button
+              onClick={getRestaurant}
+              className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:cursor-pointer"
+            >
+              Find Restaurants
+            </button>
           </div>
-          
+
 
           {latitude && longitude && (
             <div className="mt-6 space-y-4">
@@ -115,6 +115,34 @@ export default function Home() {
               {error}
             </p>
           )}
+
+          {/* Restaurent rendering area */}
+          <div className="mt-8">
+            <h2 className="text-2xl font-bold mb-4">
+              Nearby Restaurants:
+            </h2>
+
+            <div className="space-y-4">
+              {
+                restaurants.map((restaurant, index) => (
+                  <div 
+                  key={index} 
+                  className="bg-white p-4 rounded-xl shadow">
+                    <h3>{restaurant.tags?.name || "Unnamed Restaurant"}</h3>
+
+                    <p>
+                      Latitude: {restaurant.lat}
+                    </p>
+
+                    <p>
+                      Longitude: {restaurant.lon}
+                    </p>
+                  </div>
+                ))
+              }
+            </div>
+          </div>
+
         </div>
 
       </main>
