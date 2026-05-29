@@ -10,6 +10,7 @@ const Map = dynamic(() => import("@/components/Map"), {
 export default function Home() {
   const [latitude, setLatitude] = useState<number | null>(null);
   const [longitude, setLongitude] = useState<number | null>(null);
+  const [restaurants, setRestaurants] = useState<any[]>([]);
   const [error, setError] = useState("");
 
 // Get Location Function
@@ -34,6 +35,35 @@ export default function Home() {
   // Get Restaurant function
   const getRestaurant = () => {
     console.log("Fetching restaurants...");
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const latitude = position.coords.latitude;
+        const longitude = position.coords.longitude;
+
+        console.log(latitude, longitude);
+
+        const query =`
+          [out:json];
+          node
+          ["amenity"="restaurant"]
+          (around:3000, ${latitude}, ${longitude});
+          out;
+        `;
+
+        fetch("https://overpass-api.de/api/interpreter", {
+          method: "POST",
+          body: query,
+        })
+        .then((res) => res.json())
+        .then((data) => {
+          console.log(data.elements);
+          setRestaurants(data.elements);
+        })
+      },
+      (error)=>{
+        console.log(error);
+      }
+    );
   }
 
   return (
