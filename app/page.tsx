@@ -8,28 +8,33 @@ const Map = dynamic(() => import("@/components/Map"), {
 });
 
 export default function Home() {
-      const [latitude, setLatitude] = useState<number | null>(null);
-      const [longitude, setLongitude] = useState<number | null>(null);
-      const [error, setError] = useState("");
+  const [latitude, setLatitude] = useState<number | null>(null);
+  const [longitude, setLongitude] = useState<number | null>(null);
+  const [error, setError] = useState("");
 
-
-      const getLocation = () => {
-        if (!navigator.geolocation) {
-          setError("Geolocation is not supported");
-          return;
-      }
-
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setLatitude(position.coords.latitude);
-          setLongitude(position.coords.longitude);
-          setError("");
-        },
-        (error) => {
-          setError(error.message);
-        }
-      );
+// Get Location Function
+  const getLocation = () => {
+    if (!navigator.geolocation) {
+      setError("Geolocation is not supported");
+      return;
     }
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setLatitude(position.coords.latitude);
+        setLongitude(position.coords.longitude);
+        setError("");
+      },
+      (error) => {
+        setError(error.message);
+      }
+    );
+  }
+
+  // Get Restaurant function
+  const getRestaurant = () => {
+    console.log("Fetching restaurants...");
+  }
 
   return (
     <div >
@@ -39,37 +44,47 @@ export default function Home() {
             Geolocation App
           </h1>
 
-          <button 
-          onClick={getLocation}
-          className="bg-black text-white px-6 py-3 rounded-lg"
+          <div className="flex flex-col gap-3 justify-start items-start md:flex-row">
+            <button
+            onClick={getLocation}
+            className="bg-black text-white px-6 py-3 rounded-lg hover:cursor-pointer"
           >
             Get My Location
           </button>
 
-        {latitude && longitude && (
-          <div className="mt-6 space-y-4">
-            <div className="bg-white p-4 rounded-xl shadow">
-              <p>
-                <strong>Latitude:</strong> {latitude}
-              </p>
-
-              <p>
-                <strong>Longitude:</strong> {longitude}
-              </p>
-            </div>
-
-            <Map
-              latitude={latitude}
-              longitude={longitude}
-            />
+          <button
+          onClick={getRestaurant}
+            className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:cursor-pointer"
+          >
+            Find Restaurants
+          </button>
           </div>
-        )}
+          
 
-        {error && (
-          <p className="text-red-500 mt-4">
-            {error}
-          </p>
-        )}
+          {latitude && longitude && (
+            <div className="mt-6 space-y-4">
+              <div className="bg-white p-4 rounded-xl shadow">
+                <p>
+                  <strong>Latitude:</strong> {latitude}
+                </p>
+
+                <p>
+                  <strong>Longitude:</strong> {longitude}
+                </p>
+              </div>
+
+              <Map
+                latitude={latitude}
+                longitude={longitude}
+              />
+            </div>
+          )}
+
+          {error && (
+            <p className="text-red-500 mt-4">
+              {error}
+            </p>
+          )}
         </div>
 
       </main>
